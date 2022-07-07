@@ -4,6 +4,9 @@ The beginnings of a C FFI for [Fontdue](https://github.com/mooman219/fontdue).
 
 Fontdue is an ultra-fast, easy-to-use font renderer written in Rust. The code in this repository allows you to write bindings for it in any language with C interoperability.
 
+* [Codeberg repo](https://codeberg.org/spindlebink/fontdue-native)
+* [GitHub mirror](https://github.com/spindlebink/fontdue-native)
+
 ## Status
 
 The interface is very much incomplete. I've bound the Font struct and its associated functions and nothing else.
