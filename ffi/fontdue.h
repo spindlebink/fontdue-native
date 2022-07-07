@@ -10,8 +10,14 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+/**
+ * Opaque pointer to a font.
+ */
 typedef void *FTD_Font;
 
+/**
+ * 32-bit character type.
+ */
 typedef uint32_t FTD_Char;
 
 /**

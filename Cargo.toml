@@ -9,3 +9,6 @@ crate-type = ["lib", "cdylib", "staticlib"]
 [dependencies]
 fontdue = "0.7"
 libc = "0.2"
+
+[build-dependencies]
+cbindgen = "0.24"

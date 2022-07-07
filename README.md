@@ -9,13 +9,22 @@ Fontdue is an ultra-fast, easy-to-use font renderer written in Rust. The code in
 
 ## Status
 
-The interface is very much incomplete. I've bound the Font struct and its associated functions and nothing else.
+The C interface is complete, if untested, for the core `fontdue::Font` type. Running `cargo build` will generate a C header in `ffi/fontdue.h` which includes documentation. The API is pretty self explanatory.
 
-To-dos, besides wrapping the rest of the library:
-* Remove dependencies on stdlib, since Fontdue doesn't need it
-* Write documentation on how the calls have been translated
-* Pull stuff in `font.rs` out into multiple files, find a home for structs, in general organize the code better
-* Improve building so we don't need manual `cbindgen`
+I'm currently working on wrapping the `layout` module.
+
+## Wrapping Conventions
+
+In general, I've stuck closely to Fontdue's original naming. I've translated struct functions using the C library naming convention of `lib_struct_operation`, using in most cases a direct copy of the original function's name. For example, `fontdue::Font.rasterize_indexed(index, px)` has become `ftd_font_rasterize_indexed(font, index, px, &bitmap)`.
+
+A couple of exceptions to the 1-1 naming are:
+
+* The `ftd_font_create_from_bytes` function, which wraps `Font::from_bytes`. I added `create` to better telegraph that the function allocates for the structure.
+* The `ftd_font_free` function, which drops font info, uses `free` instead of `drop` to better fit non-Rust conventions/expectations.
+
+For return values that don't map easily to C--tuples and structs, generally--I've taken a pointer to a struct instead and populated it with the results of the corresponding Fontdue call.
+
+A couple of functions in Fontdue return an `Option`, and for these I use a pointer argument and return a `bool` for whether the function would've returned `Some`.
 
 ## License
 
