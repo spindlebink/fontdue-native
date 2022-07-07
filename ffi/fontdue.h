@@ -59,8 +59,8 @@ typedef struct FTD_OutlineBounds {
 typedef struct FTD_Metrics {
   int32_t xmin;
   int32_t ymin;
-  uintptr_t width;
-  uintptr_t height;
+  size_t width;
+  size_t height;
   float advance_width;
   float advance_height;
   struct FTD_OutlineBounds bounds;
@@ -72,7 +72,7 @@ typedef struct FTD_Metrics {
 typedef struct FTD_GlyphBitmap {
   struct FTD_Metrics metrics;
   uint8_t *data;
-  uintptr_t data_length;
+  size_t data_length;
 } FTD_GlyphBitmap;
 
 /**
@@ -87,7 +87,7 @@ typedef struct FTD_GlyphRasterConfig {
 /**
  * Allocates a font from an array of bytes.
  */
-FTD_Font ftd_font_create_from_bytes(uint8_t *bytes, uintptr_t size);
+FTD_Font ftd_font_create_from_bytes(uint8_t *bytes, size_t size);
 
 /**
  * Frees a font previously allocated with `ftd_font_from_bytes`.

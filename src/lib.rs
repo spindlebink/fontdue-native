@@ -1,10 +1,15 @@
-mod font;
+use cty::*;
 
-use core::ffi;
+mod font;
+mod layout;
 
 pub use crate::font::*;
+pub use crate::layout::*;
 
-type Font = *mut ffi::c_void;
+/// Opaque pointer to a font.
+type Font = *mut cty::c_void;
+
+/// 32-bit character type.
 type Char = u32;
 
 /// Metrics associated with line positioning.
@@ -26,8 +31,8 @@ pub struct LineMetrics {
 pub struct Metrics {
     pub xmin: i32,
     pub ymin: i32,
-    pub width: usize,
-    pub height: usize,
+    pub width: size_t,
+    pub height: size_t,
     pub advance_width: f32,
     pub advance_height: f32,
     pub bounds: OutlineBounds,
@@ -47,7 +52,7 @@ pub struct OutlineBounds {
 pub struct GlyphBitmap {
     pub metrics: Metrics,
     pub data: *mut u8,
-    pub data_length: usize,
+    pub data_length: size_t,
 }
 
 /// A mapping between character and index, usable for the `*_indexed` functions.

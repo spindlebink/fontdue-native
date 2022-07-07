@@ -1,11 +1,9 @@
-extern crate alloc;
-
 use crate::*;
 use core::{mem, ptr};
 
 /// Allocates a font from an array of bytes.
 #[no_mangle]
-pub extern "C" fn ftd_font_create_from_bytes(bytes: *mut u8, size: usize) -> Font {
+pub extern "C" fn ftd_font_create_from_bytes(bytes: *mut u8, size: size_t) -> Font {
     unsafe {
         let buf = core::slice::from_raw_parts_mut(bytes, size);
         let loaded_font = fontdue::Font::from_bytes(buf, fontdue::FontSettings::default()).unwrap();
