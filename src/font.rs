@@ -1,22 +1,41 @@
 use crate::*;
 use core::{mem, ptr};
 
-/// Allocates a font from an array of bytes.
-#[no_mangle]
-pub extern "C" fn ftd_font_create_from_bytes(bytes: *mut u8, size: size_t) -> Font {
-    unsafe {
-        let buf = core::slice::from_raw_parts_mut(bytes, size);
-        let loaded_font = fontdue::Font::from_bytes(buf, fontdue::FontSettings::default()).unwrap();
-        return Box::<fontdue::Font>::into_raw(Box::new(loaded_font)) as Font;
+/// Opaque pointer to a font.
+pub type Font = *mut cty::c_void;
+
+#[repr(C)]
+pub struct FontSettings {
+    pub collection_index: u32,
+    pub scale: f32,
+}
+
+impl From<FontSettings> for fontdue::FontSettings {
+    fn from(settings: FontSettings) -> Self {
+        Self {
+            collection_index: settings.collection_index,
+            scale: settings.scale,
+        }
     }
 }
 
-/// Frees a font previously allocated with `ftd_font_from_bytes`.
+/// Allocates a font from an array of bytes.
+#[no_mangle]
+pub extern "C" fn ftd_font_new_from_bytes(
+    bytes: *mut u8,
+    size: size_t,
+    settings: FontSettings,
+) -> Font {
+    let buf = unsafe { core::slice::from_raw_parts_mut(bytes, size) };
+    let loaded_font = fontdue::Font::from_bytes(buf, settings.into()).unwrap();
+    return Box::<fontdue::Font>::into_raw(Box::new(loaded_font)) as Font;
+}
+
+/// Frees a font previously allocated with `ftd_font_new_from_bytes`.
 #[no_mangle]
 pub extern "C" fn ftd_font_free(font: Font) {
     unsafe {
-        let ptr = font as *mut fontdue::Font;
-        drop(Box::from_raw(ptr));
+        drop(Box::from_raw(font as *mut fontdue::Font));
     }
 }
 
@@ -42,20 +61,20 @@ pub extern "C" fn ftd_font_chars(font: Font, chars: *mut GlyphMapping) {
 /// Returns the number of available unicode characters in the font. The result
 /// will be the minimum buffer size required for a call to `ftd_font_chars`.
 #[no_mangle]
-pub extern "C" fn ftd_font_char_count(font: Font) -> usize {
+pub extern "C" fn ftd_font_char_count(font: Font) -> size_t {
     unsafe {
-        let ptr = font as *const fontdue::Font;
-        ptr.as_ref().unwrap().chars().len()
+        (font as *const fontdue::Font)
+            .as_ref()
+            .unwrap()
+            .chars()
+            .len()
     }
 }
 
 /// Returns a precomputed hash for the font file.
 #[no_mangle]
 pub extern "C" fn ftd_font_file_hash(font: Font) -> usize {
-    unsafe {
-        let ptr = font as *const fontdue::Font;
-        (*ptr).file_hash()
-    }
+    unsafe { (*(font as *const fontdue::Font)).file_hash() }
 }
 
 /// Finds the internal glyph index (usable for `*_indexed` calls) for the given
@@ -63,11 +82,10 @@ pub extern "C" fn ftd_font_file_hash(font: Font) -> usize {
 #[no_mangle]
 pub extern "C" fn ftd_font_lookup_glyph_index(font: Font, character: Char) -> u16 {
     unsafe {
-        let ptr = font as *const fontdue::Font;
-        return ptr
+        (font as *const fontdue::Font)
             .as_ref()
             .unwrap()
-            .lookup_glyph_index(char::from_u32(character).unwrap());
+            .lookup_glyph_index(char::from_u32(character).unwrap())
     }
 }
 
@@ -75,8 +93,10 @@ pub extern "C" fn ftd_font_lookup_glyph_index(font: Font, character: Char) -> u1
 #[no_mangle]
 pub extern "C" fn ftd_font_glyph_count(font: Font) -> u16 {
     unsafe {
-        let ptr = font as *const fontdue::Font;
-        return ptr.as_ref().unwrap().glyph_count();
+        (font as *const fontdue::Font)
+            .as_ref()
+            .unwrap()
+            .glyph_count()
     }
 }
 
@@ -100,9 +120,9 @@ pub extern "C" fn ftd_font_horizontal_line_metrics(
                 line_gap: metrics.line_gap,
                 new_line_size: metrics.new_line_size,
             };
-            return true;
+            true
         } else {
-            return false;
+            false
         }
     }
 }
@@ -127,9 +147,9 @@ pub extern "C" fn ftd_font_vertical_line_metrics(
                 line_gap: metrics.line_gap,
                 new_line_size: metrics.new_line_size,
             };
-            return true;
+            true
         } else {
-            return false;
+            false
         }
     }
 }
@@ -176,9 +196,9 @@ pub extern "C" fn ftd_font_horizontal_kern(
             px,
         ) {
             *kerning = kern;
-            return true;
+            true
         } else {
-            return false;
+            false
         }
     }
 }
@@ -204,9 +224,9 @@ pub extern "C" fn ftd_font_horizontal_kern_indexed(
             .horizontal_kern_indexed(left, right, px)
         {
             *kerning = kern;
-            return true;
+            true
         } else {
-            return false;
+            false
         }
     }
 }

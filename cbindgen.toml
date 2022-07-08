@@ -5,6 +5,3 @@ include_version = true
 
 [export]
 prefix = "FTD_"
-
-[export.rename]
-FTD_wchar_t = "wchar_t"
