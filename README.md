@@ -1,17 +1,19 @@
 # Fontdue Native
 
-The beginnings of a C FFI for [Fontdue](https://github.com/mooman219/fontdue).
+A C FFI for [Fontdue](https://github.com/mooman219/fontdue).
 
 Fontdue is an ultra-fast, easy-to-use font renderer written in Rust. The code in this repository allows you to write bindings for it in any language with C interoperability.
 
 * [Codeberg repo](https://codeberg.org/spindlebink/fontdue-native)
 * [GitHub mirror](https://github.com/spindlebink/fontdue-native)
 
+## Bindings
+
+* [Odin bindings](https://codeberg.org/spindlebink/fontdue-odin)
+
 ## Status
 
-The C interface is complete, if untested, for the core `fontdue::Font` type. Running `cargo build` will generate a C header in `ffi/fontdue.h` which includes documentation. The API is pretty self explanatory.
-
-I'm currently working on wrapping the `layout` module.
+The C interface should be complete. Running `cargo build` will generate a C header in `ffi/fontdue.h` which includes documentation. The API is pretty self explanatory.
 
 ## Wrapping Conventions
 
@@ -19,8 +21,7 @@ In general, I've stuck closely to Fontdue's original naming. I've translated str
 
 A couple of exceptions to the 1-1 naming are:
 
-* The `ftd_font_create_from_bytes` function, which wraps `Font::from_bytes`. I added `create` to better telegraph that the function allocates for the structure.
-* The `ftd_font_free` function, which drops font info, uses `free` instead of `drop` to better fit non-Rust conventions/expectations.
+* The `ftd_font_new_from_bytes` function, which wraps `Font::from_bytes`. I added `new` to better telegraph that the function allocates for the structure.
 
 For return values that don't map easily to C--tuples and structs, generally--I've taken a pointer to a struct instead and populated it with the results of the corresponding Fontdue call.
 
