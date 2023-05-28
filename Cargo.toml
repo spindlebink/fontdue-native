@@ -7,7 +7,7 @@ edition = "2021"
 crate-type = ["lib", "cdylib", "staticlib"]
 
 [dependencies]
-fontdue = "0.7"
+fontdue = "^0.7.3"
 libc = "0.2"
 cty = "0.2"
 
