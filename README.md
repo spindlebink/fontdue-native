@@ -10,6 +10,7 @@ Fontdue is an ultra-fast, easy-to-use font renderer written in Rust. The code in
 ## Bindings
 
 * [Odin bindings](https://codeberg.org/spindlebink/fontdue-odin)
+* [Scopes bindings](https://github.com/ScopesCommunity/eo-packages/blob/main/bindings/fontdue.sc)
 
 ## Status
 
