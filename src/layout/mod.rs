@@ -82,6 +82,7 @@ pub struct LayoutSettings {
     pub max_height: f32,
     pub horizontal_align: HorizontalAlign,
     pub vertical_align: VerticalAlign,
+    pub line_height: f32,
     pub wrap_style: WrapStyle,
     pub wrap_hard_breaks: bool,
 }
@@ -103,6 +104,7 @@ impl From<LayoutSettings> for fontdue::layout::LayoutSettings {
             },
             horizontal_align: settings.horizontal_align.into(),
             vertical_align: settings.vertical_align.into(),
+            line_height: settings.line_height,
             wrap_style: settings.wrap_style.into(),
             wrap_hard_breaks: settings.wrap_hard_breaks,
         }

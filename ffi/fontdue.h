@@ -155,6 +155,7 @@ typedef struct FTD_LayoutSettings {
   float max_height;
   enum FTD_HorizontalAlign horizontal_align;
   enum FTD_VerticalAlign vertical_align;
+  float line_height;
   enum FTD_WrapStyle wrap_style;
   bool wrap_hard_breaks;
 } FTD_LayoutSettings;
